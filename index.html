@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Dont annoy me!</title>
+  <meta name="description" content="Das Nerv-O-Meter: Jede Nerverei zählt – nach 20 wartet das Glücksrad.">
+  <meta name="theme-color" content="#160d2e">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Dont annoy me!">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- Installations-Hinweis -->
+  <div id="install-banner" class="banner" hidden>
+    <div class="banner-text" id="install-text"></div>
+    <button class="btn btn-small btn-yellow" id="install-btn" hidden>Installieren</button>
+    <button class="banner-close" id="install-close" aria-label="Schließen">✕</button>
+  </div>
+
+  <!-- 1. Start: Rolle wählen -->
+  <section class="view" id="view-start" hidden>
+    <div class="hero">
+      <div class="logo-face" data-face="angry"></div>
+      <h1 class="logo">Dont annoy&nbsp;me!</h1>
+      <p class="tagline">Das offizielle Nerv-O-Meter</p>
+    </div>
+    <div class="stack">
+      <button class="choice" id="choose-sister">
+        <span class="choice-emoji">🎂</span>
+        <span><b>Ich wurde beschenkt</b><small>Ich bin die, die genervt wird</small></span>
+      </button>
+      <button class="choice" id="choose-brother">
+        <span class="choice-emoji">🎁</span>
+        <span><b>Ich verschenke die App</b><small>Ich bin der, der nervt</small></span>
+      </button>
+    </div>
+  </section>
+
+  <!-- 2a. Bruder: Geschenk einrichten -->
+  <section class="view" id="view-gift" hidden>
+    <button class="back" data-back="start">← Zurück</button>
+    <h2>Geschenk einrichten</h2>
+    <div class="card" id="gift-create">
+      <label class="label" for="gift-name">Name deiner Schwester</label>
+      <input class="input" id="gift-name" maxlength="24" placeholder="z.&nbsp;B. Lena" autocomplete="off">
+      <button class="btn btn-pink btn-block" id="gift-generate">Geschenk-Code erzeugen</button>
+      <button class="link-btn" id="gift-have-code">Ich habe schon einen Code</button>
+    </div>
+    <div class="card" id="gift-existing" hidden>
+      <label class="label" for="gift-code-input">Vorhandenen Geschenk-Code eingeben</label>
+      <input class="input input-code" id="gift-code-input" maxlength="9" placeholder="ABCD-EFGH" autocomplete="off" autocapitalize="characters" spellcheck="false">
+      <button class="btn btn-pink btn-block" id="gift-code-ok">Verbinden</button>
+    </div>
+    <div class="card" id="gift-result" hidden>
+      <p class="muted">Schick deiner Schwester diesen Link. Damit ist ihre App automatisch mit deiner verbunden.</p>
+      <div class="code-box" id="gift-code"></div>
+      <div class="row">
+        <button class="btn btn-yellow" id="gift-share">Link teilen</button>
+        <button class="btn btn-ghost" id="gift-copy">Kopieren</button>
+      </div>
+      <p class="muted small">Falls der Link nicht klappt (z.&nbsp;B. am iPhone nach dem Installieren), tippt sie den Code oben einfach in ihrer App ein.</p>
+      <button class="btn btn-pink btn-block" id="gift-done">Fertig</button>
+    </div>
+  </section>
+
+  <!-- 2b. Schwester: Code eingeben -->
+  <section class="view" id="view-pair" hidden>
+    <button class="back" data-back="start">← Zurück</button>
+    <h2>Mit deinem Bruder verbinden</h2>
+    <div class="card">
+      <p class="muted">Gib den Geschenk-Code ein, den du bekommen hast.</p>
+      <input class="input input-code" id="pair-code" maxlength="9" placeholder="ABCD-EFGH" autocomplete="off" autocapitalize="characters" spellcheck="false">
+      <label class="label" for="pair-name">Dein Name (optional)</label>
+      <input class="input" id="pair-name" maxlength="24" placeholder="Dein Name" autocomplete="off">
+      <button class="btn btn-pink btn-block" id="pair-ok">Los geht's</button>
+    </div>
+  </section>
+
+  <!-- 3. Geburtstags-Begrüßung -->
+  <section class="view" id="view-birthday" hidden>
+    <div class="hero">
+      <div class="big-emoji">🎉</div>
+      <h1 class="logo" id="bday-title">Alles Gute zum Geburtstag!</h1>
+    </div>
+    <div class="card rules">
+      <h3>So funktioniert's</h3>
+      <ol>
+        <li><b>Er nervt dich?</b> Drück den großen roten Knopf – es hupt!</li>
+        <li><b>Er muss es zugeben:</b> In seiner App steht ein 4-stelliger Code, der sich jede Minute ändert. Nur mit seinem Code zählt die Nerverei – ihr bestätigt also beide gleichzeitig.</li>
+        <li><b>20 Nervereien</b> schalten das Glücksrad frei. 🎡</li>
+        <li><b>Zu gewinnen:</b> Taxi-Fahrt, 20&nbsp;€ Cash, 3× Küche räumen oder ein Gefallen deiner Wahl.</li>
+      </ol>
+    </div>
+    <p class="muted small center" id="bday-ios-hint" hidden>📱 iPhone-Tipp: Installiere die App über <b>Teilen → Zum Home-Bildschirm</b>. Danach musst du einmal deinen Code <b id="bday-code"></b> eingeben – merk ihn dir!</p>
+    <button class="btn btn-pink btn-block btn-big" id="bday-go">Okay, los geht's!</button>
+  </section>
+
+  <!-- 4. Hauptansicht Schwester -->
+  <section class="view" id="view-sister" hidden>
+    <header class="topbar">
+      <div class="brand"><span class="brand-dot"></span>Dont annoy me!</div>
+      <button class="icon-btn" data-open="settings" aria-label="Einstellungen">⚙︎</button>
+    </header>
+
+    <div class="card meter-card" id="meter">
+      <div class="meter-head">
+        <span class="meter-title">Nerv-O-Meter</span>
+        <span class="meter-count"><b id="count">0</b><span>/20</span></span>
+      </div>
+      <div class="segments" id="segments"></div>
+      <div class="mood">
+        <div class="mood-face" id="mood-face"></div>
+        <div class="mood-text" id="mood-text"></div>
+      </div>
+    </div>
+
+    <div class="press-area">
+      <button class="nerv-btn" id="nerv-btn">
+        <span class="nerv-emoji"><svg class="horn" viewBox="0 0 76 44" aria-hidden="true"><path d="M61 16 q5 6 0 12 M66 10 q11 12 0 24" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".85"/><circle cx="13" cy="22" r="12" fill="#2a0b2a"/><circle cx="9" cy="17" r="3.5" fill="#fff" opacity=".35"/><rect x="22" y="18" width="12" height="8" rx="2" fill="#d9a400"/><path d="M32 18 L54 7 Q58 22 54 37 L32 26 Z" fill="#ffd23f"/><path d="M54 7 Q58 22 54 37" stroke="#b88a00" stroke-width="3" fill="none"/></svg></span>
+        <span class="nerv-label">ER NERVT!</span>
+      </button>
+      <button class="wheel-cta" id="wheel-cta" hidden>
+        <span>🎡</span> Glücksrad drehen!
+      </button>
+      <p class="press-hint" id="press-hint">Noch <b id="left">20</b> Nervereien bis zum Glücksrad</p>
+    </div>
+
+    <div class="section" id="vouchers-section" hidden>
+      <h3 class="section-title">Deine Gutscheine</h3>
+      <div id="vouchers"></div>
+    </div>
+
+    <div class="section">
+      <h3 class="section-title">Protokoll der Nervereien</h3>
+      <ul class="log" id="log"></ul>
+    </div>
+  </section>
+
+  <!-- 5. Hauptansicht Bruder -->
+  <section class="view" id="view-brother" hidden>
+    <header class="topbar">
+      <div class="brand"><span class="brand-dot"></span>Dont annoy me!</div>
+      <button class="icon-btn" data-open="settings" aria-label="Einstellungen">⚙︎</button>
+    </header>
+    <div class="card code-card">
+      <p class="code-label">Dein Bestätigungs-Code</p>
+      <div class="ring-wrap">
+        <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
+          <circle cx="60" cy="60" r="54" class="ring-bg"/>
+          <circle cx="60" cy="60" r="54" class="ring-fg" id="ring-fg"/>
+        </svg>
+        <div class="code-digits" id="code-digits">····</div>
+      </div>
+      <p class="muted center">Neuer Code in <b id="code-secs">60</b>&nbsp;s</p>
+    </div>
+    <div class="card">
+      <p><b>Ehrlich bleiben!</b> Wenn du sie genervt hast, nennst du ihr diesen Code. Erst dann zählt der Eintrag – nur zu zweit geht's.</p>
+      <p class="muted small">Jeder Code gilt nur einmal und nur kurz.</p>
+    </div>
+    <div class="press-area">
+      <button class="nerv-btn nerv-btn-small" id="brother-horn">
+        <span class="nerv-emoji"><svg class="horn" viewBox="0 0 76 44" aria-hidden="true"><path d="M61 16 q5 6 0 12 M66 10 q11 12 0 24" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".85"/><circle cx="13" cy="22" r="12" fill="#2a0b2a"/><circle cx="9" cy="17" r="3.5" fill="#fff" opacity=".35"/><rect x="22" y="18" width="12" height="8" rx="2" fill="#d9a400"/><path d="M32 18 L54 7 Q58 22 54 37 L32 26 Z" fill="#ffd23f"/><path d="M54 7 Q58 22 54 37" stroke="#b88a00" stroke-width="3" fill="none"/></svg></span><span class="nerv-label">HUP!</span>
+      </button>
+    </div>
+  </section>
+</div>
+
+<!-- Sheet: Nerverei eintragen -->
+<div class="sheet-backdrop" id="sheet-entry" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="entry-title">
+    <div class="sheet-grip"></div>
+    <h2 id="entry-title">Nerverei melden</h2>
+    <label class="label">Was hat er gemacht?</label>
+    <div class="chips" id="chips"></div>
+    <input class="input" id="entry-note" maxlength="60" placeholder="…oder selbst beschreiben" autocomplete="off">
+    <div class="auth">
+      <div class="auth-step"><span class="auth-dot ok">✓</span> Du hast bestätigt</div>
+      <div class="auth-step"><span class="auth-dot">2</span> Jetzt er: Code aus seiner App</div>
+    </div>
+    <input class="input input-pin" id="entry-code" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="····" autocomplete="one-time-code">
+    <p class="error" id="entry-error"></p>
+    <div class="row">
+      <button class="btn btn-ghost" data-close="entry">Abbrechen</button>
+      <button class="btn btn-pink" id="entry-ok">Eintragen</button>
+    </div>
+  </div>
+</div>
+
+<!-- Glücksrad -->
+<div class="overlay" id="wheel-overlay" hidden>
+  <div class="wheel-screen">
+    <h2 class="logo wheel-title">Glücksrad!</h2>
+    <p class="muted center">20 Nervereien – jetzt wird abgerechnet.</p>
+    <div class="wheel-wrap">
+      <div class="wheel-pointer"></div>
+      <svg class="wheel" id="wheel" viewBox="-100 -100 200 200"></svg>
+      <button class="wheel-hub" id="spin-btn">DREH!</button>
+    </div>
+    <button class="link-btn" id="wheel-later">Später drehen</button>
+    <div class="prize-card" id="prize-card" hidden>
+      <div class="prize-emoji" id="prize-emoji"></div>
+      <p class="prize-kicker">Gewonnen!</p>
+      <p class="prize-text" id="prize-text"></p>
+      <button class="btn btn-yellow btn-block" id="prize-ok">Gutschein einstecken</button>
+    </div>
+  </div>
+</div>
+
+<!-- Sheet: Einstellungen -->
+<div class="sheet-backdrop" id="sheet-settings" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+    <div class="sheet-grip"></div>
+    <h2 id="settings-title">Einstellungen</h2>
+    <label class="toggle"><input type="checkbox" id="set-sound"><span>Hupe &amp; Sounds</span></label>
+    <button class="setting-row" id="set-badge" hidden>🔢 Stand als Zahl am App-Symbol anzeigen</button>
+    <button class="setting-row" id="set-share" hidden>🔗 Geschenk-Link erneut teilen</button>
+    <div class="setting-row static">🔑 Geschenk-Code: <b id="set-code"></b></div>
+    <button class="setting-row" id="set-install">📲 App installieren</button>
+    <button class="setting-row danger" id="set-reset">🗑 App zurücksetzen</button>
+    <p class="muted small center">Dont annoy me! · v1.0</p>
+    <button class="btn btn-ghost btn-block" data-close="settings">Schließen</button>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<canvas id="confetti" aria-hidden="true"></canvas>
+<script src="app.js"></script>
+</body>
+</html>
