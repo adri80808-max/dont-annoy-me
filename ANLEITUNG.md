@@ -3,7 +3,11 @@
 Eine installierbare Web-App (PWA) für PC, Android und iPhone. Kein App Store nötig.
 Alles läuft offline auf dem Handy. Es gibt keinen Server, keine Anmeldung und keine Datenbank.
 
-## 1. Einmalig online stellen (kostenlos)
+## 1. Online-Adresse
+
+**https://adri80808-max.github.io/dont-annoy-me/** (GitHub Pages, Repository `adri80808-max/dont-annoy-me`)
+
+### Alternative: anders online stellen
 
 Damit man die App installieren kann, muss der Ordner unter einer **https-Adresse** erreichbar sein.
 Die einfachste Möglichkeit:
@@ -58,7 +62,7 @@ Das geht nur mit nativen Store-Apps. Stattdessen zeigt die App den Stand **als Z
 
 ## Updates
 
-Wenn du Dateien änderst, erhöhe in `sw.js` die Versionsnummer (`dont-annoy-me-v1` → `v2`) und lade den Ordner neu hoch.
+Wenn du Dateien änderst, erhöhe in `sw.js` die Versionsnummer (`dont-annoy-me-v1` → `v2`) und lade die Änderung hoch: `git add -A`, `git commit -m "Update"`, `git push`.
 Sonst behalten die Handys die alte Version im Zwischenspeicher.
 
 ## Dateien
