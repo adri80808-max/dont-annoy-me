@@ -5,7 +5,7 @@
   const GOAL = 20;
   const STEP = 60; // Sekunden, die ein Bestätigungs-Code gültig ist
   const KEY = 'dont-annoy-me:v1';
-  const VERSION = '1.4';
+  const VERSION = '1.5';
 
   const PRIZES = [
     { short: 'Taxi', emoji: '🚗', color: '#ff3d7f', ink: '#fff', uses: 1,
@@ -594,6 +594,7 @@
   };
 
   // Testmodus starten/beenden – die echte Nerver-Einrichtung bleibt unangetastet.
+  $('#brother-test').onclick = () => $('#set-test').onclick();
   $('#set-test').onclick = () => {
     const t = Object.assign(defaults(), { role: 'sister', secret: S.secret, name: S.name, sound: S.sound });
     try {
