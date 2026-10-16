@@ -5,6 +5,7 @@
   const GOAL = 20;
   const STEP = 60; // Sekunden, die ein Bestätigungs-Code gültig ist
   const KEY = 'dont-annoy-me:v1';
+  const VERSION = '1.4';
 
   const PRIZES = [
     { short: 'Taxi', emoji: '🚗', color: '#ff3d7f', ink: '#fff', uses: 1,
@@ -578,6 +579,19 @@
   }
   $('#set-sound').onchange = (e) => { S.sound = e.target.checked; save(); if (S.sound) horn(); };
   $('#set-share').onclick = shareGift;
+  $('#app-version').textContent = VERSION;
+
+  // Erzwingt die neueste Version: alten Zwischenspeicher verwerfen und neu laden. Daten bleiben erhalten.
+  $('#set-update').onclick = async () => {
+    toast('Suche nach Update …');
+    try {
+      if ('serviceWorker' in navigator) {
+        for (const r of await navigator.serviceWorker.getRegistrations()) await r.unregister();
+      }
+      if (window.caches) for (const k of await caches.keys()) await caches.delete(k);
+    } catch { /* egal */ }
+    location.replace(location.pathname + '?u=' + Date.now());
+  };
 
   // Testmodus starten/beenden – die echte Nerver-Einrichtung bleibt unangetastet.
   $('#set-test').onclick = () => {
