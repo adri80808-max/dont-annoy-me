@@ -665,7 +665,19 @@
   window.addEventListener('storage', () => { S = load(); route(); });
 
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
+    // Bei einem Update übernimmt der neue Service Worker – dann einmal neu laden.
+    const hadController = !!navigator.serviceWorker.controller;
+    let reloaded = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!hadController || reloaded || spinning) return;
+      reloaded = true; location.reload();
+    });
+    navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' })
+      .then((reg) => {
+        reg.update();
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) reg.update(); });
+      })
+      .catch(() => {});
   }
   if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
 

@@ -1,5 +1,5 @@
 // Service Worker: macht die App offline-fähig und installierbar.
-const CACHE = 'dont-annoy-me-v2';
+const CACHE = 'dont-annoy-me-v3';
 const ASSETS = [
   './',
   './index.html',
@@ -14,7 +14,7 @@ const ASSETS = [
 ];
 
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS.map((u) => new Request(u, { cache: 'reload' })))).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', (e) => {
@@ -33,7 +33,7 @@ self.addEventListener('fetch', (e) => {
   e.respondWith(
     caches.open(CACHE).then(async (cache) => {
       const cached = await cache.match(key, { ignoreSearch: true });
-      const fresh = fetch(req)
+      const fresh = fetch(req.mode === 'navigate' ? req.url : req, { cache: 'no-cache' })
         .then((res) => {
           if (res && res.ok) cache.put(key, res.clone());
           return res;
