@@ -110,6 +110,12 @@
       <button class="icon-btn" data-open="settings" aria-label="Einstellungen">⚙︎</button>
     </header>
 
+    <div class="testbar" id="testbar" hidden>
+      <span>🧪 <b>Testmodus</b> – nur auf deinem Handy</span>
+      <button class="btn btn-small btn-yellow" id="test-plus">+5</button>
+      <button class="btn btn-small btn-ghost" id="test-exit">Beenden</button>
+    </div>
+
     <div class="card meter-card" id="meter">
       <div class="meter-head">
         <span class="meter-title">Nerv-O-Meter</span>
@@ -186,6 +192,7 @@
       <div class="auth-step"><span class="auth-dot">2</span> Jetzt er: Code aus seiner App</div>
     </div>
     <input class="input input-pin" id="entry-code" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="····" autocomplete="one-time-code">
+    <p class="muted small center" id="entry-testhint" hidden></p>
     <p class="error" id="entry-error"></p>
     <div class="row">
       <button class="btn btn-ghost" data-close="entry">Abbrechen</button>
@@ -222,6 +229,7 @@
     <label class="toggle"><input type="checkbox" id="set-sound"><span>Hupe &amp; Sounds</span></label>
     <button class="setting-row" id="set-badge" hidden>🔢 Stand als Zahl am App-Symbol anzeigen</button>
     <button class="setting-row" id="set-share" hidden>🔗 Geschenk-Link erneut teilen</button>
+    <button class="setting-row" id="set-test" hidden>🧪 Testmodus: App aus Sicht deiner Schwester ausprobieren</button>
     <div class="setting-row static">🔑 Geschenk-Code: <b id="set-code"></b></div>
     <button class="setting-row" id="set-install">📲 App installieren</button>
     <button class="setting-row danger" id="set-reset">🗑 App zurücksetzen</button>

@@ -25,11 +25,15 @@
     role: null, secret: null, name: '', count: 0, entries: [], usedSteps: [],
     vouchers: [], rounds: 0, sound: true, welcomed: false, wheelRot: 0
   });
+  // Testmodus: Der Nerver probiert die Schwester-Ansicht mit eigenem, getrenntem Speicher aus.
+  const TEST_FLAG = KEY + ':testmode', TEST_KEY = KEY + ':test';
+  const TEST = (() => { try { return localStorage.getItem(TEST_FLAG) === '1'; } catch { return false; } })();
+  const STORE = TEST ? TEST_KEY : KEY;
   const load = () => {
-    try { return Object.assign(defaults(), JSON.parse(localStorage.getItem(KEY)) || {}); }
+    try { return Object.assign(defaults(), JSON.parse(localStorage.getItem(STORE)) || {}); }
     catch { return defaults(); }
   };
-  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch { /* privat */ } };
+  const save = () => { try { localStorage.setItem(STORE, JSON.stringify(S)); } catch { /* privat */ } };
   let S = load();
 
   // ---------- Geschenk-Code (Base32) ----------
@@ -235,7 +239,7 @@
     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
   function updateBadge() {
-    if (S.role !== 'sister' || !('setAppBadge' in navigator)) return;
+    if (TEST || S.role !== 'sister' || !('setAppBadge' in navigator)) return;
     const p = S.count > 0 ? navigator.setAppBadge(S.count) : navigator.clearAppBadge();
     if (p && p.catch) p.catch(() => {});
   }
@@ -412,6 +416,8 @@
     chosenChip = '';
     chipBox.querySelectorAll('.chip').forEach((x) => x.classList.remove('active'));
     $('#entry-note').value = ''; $('#entry-code').value = ''; $('#entry-error').textContent = '';
+    $('#entry-testhint').hidden = !TEST;
+    if (TEST) $('#entry-testhint').textContent = `🧪 Test: Dein aktueller Code ist ${totp(S.secret, nowStep())}`;
     $('#sheet-entry').hidden = false;
   }
   function entryError(msg) {
@@ -565,12 +571,35 @@
     $('#set-sound').checked = S.sound;
     $('#set-badge').hidden = !(S.role === 'sister' && 'setAppBadge' in navigator);
     $('#set-share').hidden = S.role !== 'brother';
+    $('#set-test').hidden = S.role !== 'brother' || TEST;
     $('#set-code').textContent = fmtCode(S.secret);
     $('#set-install').hidden = isStandalone();
     $('#sheet-settings').hidden = false;
   }
   $('#set-sound').onchange = (e) => { S.sound = e.target.checked; save(); if (S.sound) horn(); };
   $('#set-share').onclick = shareGift;
+
+  // Testmodus starten/beenden – die echte Nerver-Einrichtung bleibt unangetastet.
+  $('#set-test').onclick = () => {
+    const t = Object.assign(defaults(), { role: 'sister', secret: S.secret, name: S.name, sound: S.sound });
+    try {
+      localStorage.setItem(TEST_KEY, JSON.stringify(t));
+      localStorage.setItem(TEST_FLAG, '1');
+    } catch { return toast('Testmodus nicht möglich (Speicher gesperrt).'); }
+    location.replace(location.pathname);
+  };
+  $('#testbar').hidden = !TEST;
+  $('#test-plus').onclick = () => {
+    if (S.count >= GOAL) return toast('Schon voll – dreh am Glücksrad!');
+    const add = Math.min(5, GOAL - S.count);
+    for (let i = 0; i < add; i++) S.entries.unshift({ t: Date.now(), note: 'Test-Eintrag' });
+    S.count += add; save(); renderSister(true);
+    if (S.count >= GOAL) { confetti(220); fanfare(); toast('20 erreicht – das Glücksrad ist frei! 🎡'); }
+  };
+  $('#test-exit').onclick = () => {
+    try { localStorage.removeItem(TEST_FLAG); localStorage.removeItem(TEST_KEY); } catch { /* egal */ }
+    location.replace(location.pathname);
+  };
   $('#set-badge').onclick = async () => {
     try {
       if ('Notification' in window && Notification.permission === 'default') await Notification.requestPermission();
@@ -582,7 +611,7 @@
   $('#set-reset').onclick = () => {
     if (!confirm('Wirklich alles löschen? Zähler, Protokoll und Gutscheine sind dann weg.')) return;
     if (!confirm('Ganz sicher? Das lässt sich nicht rückgängig machen.')) return;
-    try { localStorage.removeItem(KEY); } catch { /* egal */ }
+    try { localStorage.removeItem(STORE); } catch { /* egal */ }
     if ('clearAppBadge' in navigator) navigator.clearAppBadge().catch(() => {});
     location.replace(location.pathname);
   };
