@@ -1,5 +1,5 @@
 // Service Worker: macht die App offline-fähig und installierbar.
-const CACHE = 'dont-annoy-me-v5';
+const CACHE = 'dont-annoy-me-v6';
 const ASSETS = [
   './',
   './index.html',

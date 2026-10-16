@@ -5,21 +5,21 @@
   const GOAL = 20;
   const STEP = 60; // Sekunden, die ein Bestätigungs-Code gültig ist
   const KEY = 'dont-annoy-me:v1';
-  const VERSION = '1.5';
+  const VERSION = '1.6';
 
   const PRIZES = [
     { short: 'Taxi', emoji: '🚗', color: '#ff3d7f', ink: '#fff', uses: 1,
-      text: 'Eine Autofahrt/Abholung inkl. Hin und Rückfahrt von Ada' },
+      text: 'A car ride/pick-up incl. round trip from Ada' },
     { short: '20 €', emoji: '💶', color: '#ffd23f', ink: '#2a1300', uses: 1,
-      text: '20 Euro Cash' },
-    { short: 'Küche', emoji: '🍳', color: '#2ee6a6', ink: '#00321f', uses: 3,
-      text: '3mal Küche verlassen wenn du in der Küche bist, AUCH wenn ich esse' },
-    { short: 'Gefallen', emoji: '✨', color: '#7b5cff', ink: '#fff', uses: 1,
-      text: 'random favour of your Choice' }
+      text: '20 euros cash' },
+    { short: 'Kitchen', emoji: '🍳', color: '#2ee6a6', ink: '#00321f', uses: 3,
+      text: 'I leave the kitchen 3 times when you’re in it, EVEN if I’m eating' },
+    { short: 'Favour', emoji: '✨', color: '#7b5cff', ink: '#fff', uses: 1,
+      text: 'A random favour of your choice' }
   ];
 
-  const CHIPS = ['Einfach so genervt 🙄', 'Ins Zimmer geplatzt 🚪', 'Blöde Sprüche 💬',
-    'Essen geklaut 🍕', 'Viel zu laut 🔊', 'Bad blockiert 🚿'];
+  const CHIPS = ['Just annoying 🙄', 'Barged into my room 🚪', 'Dumb jokes 💬',
+    'Stole my food 🍕', 'Way too loud 🔊', 'Hogged the bathroom 🚿'];
 
   // ---------- Speicher ----------
   const defaults = () => ({
@@ -196,7 +196,7 @@
       <ellipse cx="36" cy="22" rx="14" ry="6" fill="#fff" opacity=".25"/>${parts}</svg>`;
   }
   const moodOf = (n) => n <= 8 ? 'happy' : n <= 14 ? 'neutral' : 'angry';
-  const MOOD_TEXT = { happy: 'Noch alles entspannt', neutral: 'Langsam reicht’s …', angry: 'GLEICH KNALLT’S!' };
+  const MOOD_TEXT = { happy: 'All chill so far', neutral: 'Getting fed up …', angry: 'ABOUT TO EXPLODE!' };
   const segColor = (i) => `hsl(${Math.round(150 - i * 150 / (GOAL - 1))} 88% 58%)`;
 
   // ---------- Toast & Konfetti ----------
@@ -267,7 +267,7 @@
         save();
         return show('birthday');
       }
-      if (S.secret !== m[1].toUpperCase()) toast('Diese App ist schon mit einem anderen Code eingerichtet.');
+      if (S.secret !== m[1].toUpperCase()) toast('This app is already set up with a different code.');
     }
     if (!S.role) return show('start');
     if (S.role === 'brother') return show('brother');
@@ -286,8 +286,8 @@
   // Bruder: Geschenk einrichten
   const giftLink = () => location.origin + location.pathname + '#gift=' + S.secret +
     (S.name ? '&n=' + encodeURIComponent(S.name) : '');
-  const giftText = () => `Happy Birthday${S.name ? ' ' + S.name : ''}! 🎉 Dein Geschenk: die App „Dont annoy me!“. ` +
-    `Öffne den Link und installiere sie. Dein Code: ${fmtCode(S.secret)}`;
+  const giftText = () => `Happy Birthday${S.name ? ' ' + S.name : ''}! 🎉 Your gift: the app “Dont annoy me!”. ` +
+    `Open the link and install it. Your code: ${fmtCode(S.secret)}`;
   async function shareGift() {
     if (navigator.share) {
       try { await navigator.share({ title: 'Dont annoy me!', text: giftText(), url: giftLink() }); return; }
@@ -297,8 +297,8 @@
   }
   async function copyGift() {
     const txt = giftText() + '\n' + giftLink();
-    try { await navigator.clipboard.writeText(txt); toast('Link kopiert – ab in den Chat damit!'); }
-    catch { window.prompt('Kopiere diesen Text:', txt); }
+    try { await navigator.clipboard.writeText(txt); toast('Link copied – paste it into the chat!'); }
+    catch { window.prompt('Copy this text:', txt); }
   }
   $('#gift-generate').onclick = () => {
     S.role = 'brother'; S.secret = newSecret(); S.name = $('#gift-name').value.trim(); save();
@@ -308,7 +308,7 @@
   $('#gift-have-code').onclick = () => { $('#gift-create').hidden = true; $('#gift-existing').hidden = false; };
   $('#gift-code-ok').onclick = () => {
     const c = cleanCode($('#gift-code-input').value);
-    if (!validCode(c)) return toast('Der Code hat 8 Zeichen, z. B. ABCD-EFGH');
+    if (!validCode(c)) return toast('The code has 8 characters, e.g. ABCD-EFGH');
     S.role = 'brother'; S.secret = c; save(); show('brother');
   };
   $('#gift-share').onclick = shareGift;
@@ -318,14 +318,14 @@
   // Schwester: Code eingeben
   $('#pair-ok').onclick = () => {
     const c = cleanCode($('#pair-code').value);
-    if (!validCode(c)) { $('#pair-code').classList.add('shake-x'); setTimeout(() => $('#pair-code').classList.remove('shake-x'), 400); return toast('Der Code hat 8 Zeichen, z. B. ABCD-EFGH'); }
+    if (!validCode(c)) { $('#pair-code').classList.add('shake-x'); setTimeout(() => $('#pair-code').classList.remove('shake-x'), 400); return toast('The code has 8 characters, e.g. ABCD-EFGH'); }
     S.role = 'sister'; S.secret = c; S.name = $('#pair-name').value.trim() || S.name; save();
     show('birthday');
   };
 
   // Geburtstag
   function renderBirthday() {
-    $('#bday-title').textContent = `Alles Gute zum Geburtstag${S.name ? ', ' + S.name : ''}!`;
+    $('#bday-title').textContent = `Happy Birthday${S.name ? ', ' + S.name : ''}!`;
     $('#bday-ios-hint').hidden = !(isIOS && !isStandalone());
     $('#bday-code').textContent = fmtCode(S.secret);
     setTimeout(() => confetti(160), 250);
@@ -335,7 +335,7 @@
   // ---------- Schwester: Hauptansicht ----------
   const segBox = $('#segments');
   for (let i = 0; i < GOAL; i++) segBox.appendChild(Object.assign(document.createElement('div'), { className: 'seg' }));
-  const fmtTime = new Intl.DateTimeFormat('de-DE', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+  const fmtTime = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
   function renderSister(justAdded = false) {
@@ -353,7 +353,7 @@
     const face = $('#mood-face');
     if (face.dataset.mood !== mood) { face.innerHTML = faceSVG(mood); face.dataset.mood = mood; }
     face.className = 'mood-face ' + mood;
-    $('#mood-text').textContent = n >= GOAL ? 'Glücksrad freigeschaltet!' : MOOD_TEXT[mood];
+    $('#mood-text').textContent = n >= GOAL ? 'Prize wheel unlocked!' : MOOD_TEXT[mood];
 
     const full = n >= GOAL;
     $('#nerv-btn').hidden = full;
@@ -367,11 +367,11 @@
     vs.innerHTML = S.vouchers.map((v) => {
       const p = PRIZES[v.p];
       const used = v.left <= 0;
-      const extra = p.uses > 1 && !used ? ` · noch ${v.left}× übrig` : used ? ' · eingelöst' : '';
+      const extra = p.uses > 1 && !used ? ` · ${v.left}× left` : used ? ' · redeemed' : '';
       return `<div class="voucher${used ? ' used' : ''}">
         <span class="voucher-emoji">${p.emoji}</span>
-        <div class="voucher-body"><b>${esc(p.text)}</b><small>Gewonnen am ${fmtTime.format(v.t)}${extra}</small></div>
-        ${used ? '' : `<button class="btn" data-redeem="${v.id}">Einlösen</button>`}
+        <div class="voucher-body"><b>${esc(p.text)}</b><small>Won on ${fmtTime.format(v.t)}${extra}</small></div>
+        ${used ? '' : `<button class="btn" data-redeem="${v.id}">Redeem</button>`}
       </div>`;
     }).join('');
 
@@ -379,18 +379,18 @@
     const log = $('#log');
     log.innerHTML = S.entries.length
       ? S.entries.map((e, i) => `<li><span class="log-n">#${S.entries.length - i}</span>
-          <span class="log-note">${esc(e.note || 'Genervt')}</span>
+          <span class="log-note">${esc(e.note || 'Annoyed')}</span>
           <span class="log-time">${fmtTime.format(e.t)}</span></li>`).join('')
-      : '<li class="empty">Noch nichts – er war (bisher) brav. 😇</li>';
+      : '<li class="empty">Nothing yet – he’s been good (so far). 😇</li>';
     updateBadge();
   }
 
   $('#vouchers').addEventListener('click', (e) => {
     const b = e.target.closest('[data-redeem]'); if (!b) return;
     const v = S.vouchers.find((x) => x.id === b.dataset.redeem); if (!v) return;
-    if (!confirm(`Gutschein jetzt einlösen?\n\n„${PRIZES[v.p].text}“`)) return;
+    if (!confirm(`Redeem this voucher now?\n\n“${PRIZES[v.p].text}”`)) return;
     v.left -= 1; v.redeemed = Date.now(); save(); renderSister();
-    horn(); toast(v.left > 0 ? `Eingelöst! Noch ${v.left}× übrig.` : 'Eingelöst! Viel Spaß 😎');
+    horn(); toast(v.left > 0 ? `Redeemed! ${v.left}× left.` : 'Redeemed! Enjoy 😎');
   });
 
   // Nerv-Knopf
@@ -418,7 +418,7 @@
     chipBox.querySelectorAll('.chip').forEach((x) => x.classList.remove('active'));
     $('#entry-note').value = ''; $('#entry-code').value = ''; $('#entry-error').textContent = '';
     $('#entry-testhint').hidden = !TEST;
-    if (TEST) $('#entry-testhint').textContent = `🧪 Test: Dein aktueller Code ist ${totp(S.secret, nowStep())}`;
+    if (TEST) $('#entry-testhint').textContent = `🧪 Test: your current code is ${totp(S.secret, nowStep())}`;
     $('#sheet-entry').hidden = false;
   }
   function entryError(msg) {
@@ -435,11 +435,11 @@
 
   function submitEntry() {
     const code = $('#entry-code').value;
-    if (code.length !== 4) return entryError('Er muss dir seinen 4-stelligen Code geben.');
+    if (code.length !== 4) return entryError('He has to give you his 4-digit code.');
     const now = nowStep();
     const hit = [0, -1, 1].map((d) => now + d).find((st) => totp(S.secret, st) === code);
-    if (hit === undefined) return entryError('Falscher Code – so zählt das nicht! 😤');
-    if (S.usedSteps.includes(hit)) return entryError('Dieser Code wurde schon benutzt. Warte auf den nächsten.');
+    if (hit === undefined) return entryError('Wrong code – that doesn’t count! 😤');
+    if (S.usedSteps.includes(hit)) return entryError('This code was already used. Wait for the next one.');
     S.usedSteps = [...S.usedSteps, hit].slice(-40);
     S.count = Math.min(GOAL, S.count + 1);
     S.entries.unshift({ t: Date.now(), note: ($('#entry-note').value.trim() || chosenChip).slice(0, 60) });
@@ -448,9 +448,9 @@
     renderSister(true);
     buzz(40);
     if (S.count >= GOAL) {
-      confetti(220); fanfare(); toast('20 erreicht – das Glücksrad ist frei! 🎡');
+      confetti(220); fanfare(); toast('20 reached – the prize wheel is unlocked! 🎡');
     } else {
-      confetti(50); toast(`Eingetragen! ${S.count}/${GOAL}`);
+      confetti(50); toast(`Added! ${S.count}/${GOAL}`);
     }
   }
 
@@ -536,7 +536,7 @@
   $('#prize-ok').onclick = () => {
     $('#wheel-overlay').hidden = true;
     renderSister();
-    toast('Neue Runde – das Nerv-O-Meter steht wieder auf 0.');
+    toast('New round – the Annoy-O-Meter is back at 0.');
   };
 
   // ---------- Bruder: Code-Anzeige ----------
@@ -583,7 +583,7 @@
 
   // Erzwingt die neueste Version: alten Zwischenspeicher verwerfen und neu laden. Daten bleiben erhalten.
   $('#set-update').onclick = async () => {
-    toast('Suche nach Update …');
+    toast('Checking for updates …');
     try {
       if ('serviceWorker' in navigator) {
         for (const r of await navigator.serviceWorker.getRegistrations()) await r.unregister();
@@ -600,16 +600,16 @@
     try {
       localStorage.setItem(TEST_KEY, JSON.stringify(t));
       localStorage.setItem(TEST_FLAG, '1');
-    } catch { return toast('Testmodus nicht möglich (Speicher gesperrt).'); }
+    } catch { return toast('Test mode not possible (storage blocked).'); }
     location.replace(location.pathname);
   };
   $('#testbar').hidden = !TEST;
   $('#test-plus').onclick = () => {
-    if (S.count >= GOAL) return toast('Schon voll – dreh am Glücksrad!');
+    if (S.count >= GOAL) return toast('Already full – spin the wheel!');
     const add = Math.min(5, GOAL - S.count);
-    for (let i = 0; i < add; i++) S.entries.unshift({ t: Date.now(), note: 'Test-Eintrag' });
+    for (let i = 0; i < add; i++) S.entries.unshift({ t: Date.now(), note: 'Test entry' });
     S.count += add; save(); renderSister(true);
-    if (S.count >= GOAL) { confetti(220); fanfare(); toast('20 erreicht – das Glücksrad ist frei! 🎡'); }
+    if (S.count >= GOAL) { confetti(220); fanfare(); toast('20 reached – the prize wheel is unlocked! 🎡'); }
   };
   $('#test-exit').onclick = () => {
     try { localStorage.removeItem(TEST_FLAG); localStorage.removeItem(TEST_KEY); } catch { /* egal */ }
@@ -620,12 +620,12 @@
       if ('Notification' in window && Notification.permission === 'default') await Notification.requestPermission();
     } catch { /* egal */ }
     updateBadge();
-    toast(isStandalone() ? 'Der Stand steht jetzt als Zahl am App-Symbol.' : 'Klappt erst, wenn die App installiert ist.');
+    toast(isStandalone() ? 'The count now shows as a number on the app icon.' : 'Only works once the app is installed.');
   };
   $('#set-install').onclick = () => { $('#sheet-settings').hidden = true; installHelp(); };
   $('#set-reset').onclick = () => {
-    if (!confirm('Wirklich alles löschen? Zähler, Protokoll und Gutscheine sind dann weg.')) return;
-    if (!confirm('Ganz sicher? Das lässt sich nicht rückgängig machen.')) return;
+    if (!confirm('Really delete everything? Counter, log and vouchers will be gone.')) return;
+    if (!confirm('Are you sure? This can’t be undone.')) return;
     try { localStorage.removeItem(STORE); } catch { /* egal */ }
     if ('clearAppBadge' in navigator) navigator.clearAppBadge().catch(() => {});
     location.replace(location.pathname);
@@ -642,10 +642,10 @@
     $('#install-banner').hidden = false;
   }
   function installHelp() {
-    if (isStandalone()) return toast('Die App ist schon installiert ✓');
+    if (isStandalone()) return toast('The app is already installed ✓');
     if (deferredPrompt) return promptInstall();
-    if (isIOS) return alert('So installierst du die App auf dem iPhone/iPad:\n\n1. In Safari öffnen\n2. Unten auf „Teilen“ (□↑) tippen\n3. „Zum Home-Bildschirm“ wählen\n4. „Hinzufügen“ tippen');
-    alert('So installierst du die App:\n\n• Android (Chrome): Menü ⋮ → „App installieren“ bzw. „Zum Startbildschirm hinzufügen“\n• PC (Chrome/Edge): Installations-Symbol rechts in der Adressleiste oder Menü → „App installieren“\n• Mac (Safari): Ablage → „Zum Dock hinzufügen“');
+    if (isIOS) return alert('How to install the app on iPhone/iPad:\n\n1. Open in Safari\n2. Tap “Share” (□↑) at the bottom\n3. Choose “Add to Home Screen”\n4. Tap “Add”');
+    alert('How to install the app:\n\n• Android (Chrome): menu ⋮ → “Install app” or “Add to Home screen”\n• PC (Chrome/Edge): install icon on the right of the address bar, or menu → “Install app”\n• Mac (Safari): File → “Add to Dock”');
   }
   async function promptInstall() {
     if (!deferredPrompt) return;
@@ -656,15 +656,15 @@
   }
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault(); deferredPrompt = e;
-    showBanner('📲 <b>Dont annoy me!</b> als App installieren?', true);
+    showBanner('📲 Install <b>Dont annoy me!</b> as an app?', true);
   });
-  window.addEventListener('appinstalled', () => { $('#install-banner').hidden = true; toast('Installiert! 🎉'); });
+  window.addEventListener('appinstalled', () => { $('#install-banner').hidden = true; toast('Installed! 🎉'); });
   $('#install-btn').onclick = promptInstall;
   $('#install-close').onclick = () => {
     $('#install-banner').hidden = true;
     try { localStorage.setItem(BANNER_KEY, '1'); } catch { /* egal */ }
   };
-  if (isIOS && !isStandalone()) showBanner('📲 Installieren: unten auf <b>Teilen</b> tippen, dann <b>„Zum Home-Bildschirm“</b>.', false);
+  if (isIOS && !isStandalone()) showBanner('📲 To install: tap <b>Share</b> at the bottom, then <b>“Add to Home Screen”</b>.', false);
 
   // ---------- Los ----------
   document.addEventListener('keydown', (e) => {
