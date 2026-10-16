@@ -350,3 +350,9 @@ p { margin: 0 0 12px; }
   border: 2px dashed var(--yellow);
 }
 .testbar span { flex: 1; }
+
+.bday-personal {
+  margin: 18px auto 0; max-width: 340px;
+  font-size: 22px; font-weight: 900; line-height: 1.3; color: var(--yellow);
+  text-shadow: 0 3px 0 rgba(0, 0, 0, .25);
+}

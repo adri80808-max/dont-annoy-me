@@ -5,7 +5,7 @@
   const GOAL = 20;
   const STEP = 60; // Sekunden, die ein Bestätigungs-Code gültig ist
   const KEY = 'dont-annoy-me:v1';
-  const VERSION = '1.6';
+  const VERSION = '1.7';
 
   const PRIZES = [
     { short: 'Taxi', emoji: '🚗', color: '#ff3d7f', ink: '#fff', uses: 1,
@@ -18,8 +18,12 @@
       text: 'A random favour of your choice' }
   ];
 
-  const CHIPS = ['Just annoying 🙄', 'Barged into my room 🚪', 'Dumb jokes 💬',
-    'Stole my food 🍕', 'Way too loud 🔊', 'Hogged the bathroom 🚿'];
+  const CHIPS = ['Just annoying', 'Barged into my room', 'Dumb jokes',
+    'Stole my food', 'Way too loud', 'Hogged the bathroom'];
+  // Emojis aus Protokoll-Einträgen entfernen (auch aus älteren Einträgen).
+  const noEmoji = (s) => String(s)
+    .replace(/[\p{Extended_Pictographic}\u{1F3FB}-\u{1F3FF}️‍]/gu, '')
+    .replace(/\s+/g, ' ').trim();
 
   // ---------- Speicher ----------
   const defaults = () => ({
@@ -379,9 +383,9 @@
     const log = $('#log');
     log.innerHTML = S.entries.length
       ? S.entries.map((e, i) => `<li><span class="log-n">#${S.entries.length - i}</span>
-          <span class="log-note">${esc(e.note || 'Annoyed')}</span>
+          <span class="log-note">${esc(noEmoji(e.note || '') || 'Annoyed')}</span>
           <span class="log-time">${fmtTime.format(e.t)}</span></li>`).join('')
-      : '<li class="empty">Nothing yet – he’s been good (so far). 😇</li>';
+      : '<li class="empty">Ada has not done anything weird/stupid or annoying asf yet</li>';
     updateBadge();
   }
 
